@@ -1,0 +1,161 @@
+<div class="carousel-title-wrapper"> <h2 class="title reprise-heading-1">Why customers love us</h2></div>
+<div id="pdpVideoCarousel" class="video-inner">
+  {% for block in section.blocks %}
+<div class="slick-slide">
+<div class="video-wrapper" style="width: 100%; display: inline-block;">
+  <video playsinline="playsinline" controls="controls" preload="metadata" poster="//cdn.shopify.com/s/files/1/0572/9507/7581/files/preview_images/9d9ead72d895494197c44a4d684920a4.thumbnail.0000000000_800x.jpg?v=1667251130">
+    <source src="https://cdn.shopify.com/videos/c/vp/9d9ead72d895494197c44a4d684920a4/9d9ead72d895494197c44a4d684920a4.HD-1080p-7.2Mbps-10251513.mp4" type="video/mp4">
+    <img src="//cdn.shopify.com/s/files/1/0572/9507/7581/files/preview_images/9d9ead72d895494197c44a4d684920a4.thumbnail.0000000000_800x.jpg?v=1667251130">
+  </video>
+</div>
+</div>
+  {% endfor %}
+</div>
+{% schema %}
+  {
+    "name": "Review Slider",
+    "class": "index-section",
+    "settings": [
+    ],
+    "blocks": [
+      {
+        "type": "video",
+        "name": "Video slide",
+        "settings": [
+          {
+            "type": "textarea",
+            "id": "video_url",
+            "label": "Video link"
+          }
+        ]
+      }
+    ],
+    "presets": [{
+      "name": "Review Slider",
+      "category": "Image",
+      "blocks": [
+      ]
+    }]
+  }
+{% endschema %}
+<style>
+  .reprise-heading-1 {
+    font-size: 2.5vw!important;
+    text-align: center;
+    font-weight: bold;
+}
+  .video-wrapper {
+    position: relative;
+}
+#pdpVideoCarousel video {
+    width: 100%!important;
+    height: auto!important;
+}
+.video-wrapper video {
+    display: block;
+    width: 100%;
+    height: auto;
+} 
+  .video-inner .slick-slide video {
+    transition: transform .3s ease-in-out;
+    transform: scale(.4);
+}
+.video-inner .slick-index-prev video {
+    transform: scale(.7) translate(-19%);
+}
+.video-inner .slick-slide video {
+    transition: transform .3s ease-in-out;
+}
+  .video-inner .slick-slide.slick-current video {
+    transform: scale(1);
+}
+.video-inner .slick-index-next video {
+    transform: scale(.7) translate(19%);
+}
+</style>
+<script>
+    var $allVideos = $('#pdpVideoCarousel video');
+  $('#pdpVideoCarousel video').on('play', function(e) {
+    console.log('play tap');
+    var $thisVideo = $(this);
+    var clickedSlide = $(this).closest('.slick-slide');
+    if ( !clickedSlide.hasClass('slick-current') ) {
+      console.log('slide to new slide. play video.');
+      var clickedIndex = clickedSlide.attr('data-slick-index');
+      //$allVideos.not(this).each(function() {
+      //  this.pause()
+      //})
+      vidCarousel.slick('slickGoTo',clickedIndex);
+      //$(this).play();
+      //e.target.play();
+    } else {
+      console.log('video to play is already front and center');
+    }
+  });
+  
+
+$('#pdpVideoCarousel').on('init',function(event,slick){
+  console.log('init');
+  $('.slick-current').prev().addClass('slick-index-prev');
+  $('.slick-current').prev().prev().addClass('slick-index-prev-prev');
+  $('.slick-current').next().addClass('slick-index-next');
+  $('.slick-current').next().next().addClass('slick-index-next-next');
+});
+
+$('#pdpVideoCarousel').on('beforeChange', function(event, slick, currentSlide, nextSlide){
+  console.log('beforechange');
+  $('.slick-slide').removeClass('slick-index-prev ');
+  $('.slick-slide').removeClass('slick-index-next');
+  $('.slick-slide').removeClass('slick-index-next-next');
+  $('.slick-slide').removeClass('slick-index-prev-prev');
+  var newCurrent = slick.$slides[nextSlide];
+  $(newCurrent).next().addClass('slick-index-next');
+  $(newCurrent).next().next().addClass('slick-index-next-next');
+  $(newCurrent).prev().addClass('slick-index-prev');
+  $(newCurrent).prev().prev().addClass('slick-index-prev-prev');
+  var videos = $('#pdpVideoCarousel video');
+  videos.each(function(){
+    //$(this).get(0).pause();
+    var clickedSlide = $(this).closest('.slick-slide');
+    if ( !clickedSlide.hasClass('slick-current') ) {
+      console.log('not current slide');
+    }
+  });
+});
+
+$('#pdpVideoCarousel').on('afterChange', function(event, slick, currentSlide, nextSlide){
+  console.log('afterChagne');
+  var videos = $('#pdpVideoCarousel video');
+  videos.each(function(){
+    var clickedSlide = $(this).closest('.slick-slide');
+    if ( !clickedSlide.hasClass('slick-current') ) {
+      console.log('not current slide');
+      $(this).get(0).pause();
+    }
+  });
+});
+
+  var vidCarousel = $('#pdpVideoCarousel').not('.slick-initialized').slick({
+    centerMode: true,
+    centerPadding: "0px",
+    infinite: true,
+    slidesToShow: 5,
+    slidesToScroll: 1,
+    arrows: false,
+    dots: false,
+    touchThreshold: 10,
+    focusOnSelect: true,
+    responsive: [
+      {
+        breakpoint: 799,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          infinite: true,
+          dots: true
+        }
+      }
+    ]
+  });
+  
+</script>
